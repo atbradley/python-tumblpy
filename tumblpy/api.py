@@ -5,6 +5,7 @@ from . import __version__
 from .compat import json, urlencode, parse_qsl
 from .exceptions import TumblpyError, TumblpyAuthError
 from .helpers import _split_params_and_files
+import sys
 
 
 class Tumblpy(object):
@@ -108,13 +109,14 @@ class Tumblpy(object):
 
         if blog_url is not None:
             # http://api.tumblr.com/v2/blog/blogname.tumblr.com/
+            if sys.version_info[0] >= 3:
+                from urllib.parse import urlparse
+
             blog_url = urlparse(blog_url)
             url = '%sblog/%s/' % (
                 self.api_url,
                 blog_url.hostname if blog_url.hostname is not None else blog_url.path
             )
-
-            url = '%sblog/%s/' % (self.api_url, blog_url)
 
         url = '%s%s' % (url, endpoint)
         if extra_endpoints is not None:
